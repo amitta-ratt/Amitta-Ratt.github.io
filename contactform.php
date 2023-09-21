@@ -1,9 +1,5 @@
 <?php
 
-use PHPMailer\PHPMailer\PHPMailer;
-use PHPMailer\PHPMailer\SMTP;
-use PHPMailer\PHPMailer\Exception;
-
 if (isset($_POST['submit'])) {
     $name = $_POST['name'];
     $email = $_POST['email'];
@@ -19,38 +15,29 @@ if (isset($_POST['submit'])) {
         exit();
     }
 
-try {
-    $mail = new PHPMailer(true);
+    $mailTo = "Amititar27@icloud.com";
+    $subject = "Contact Form Submission from $name";
+    $headers = "From: $email\r\n";
+    $headers .= "Reply-To: $email\r\n";
+    $headers .= "MIME-Version: 1.0\r\n";
+    $headers .= "Content-Type: text/plain; charset=UTF-8\r\n";
 
-    $mail->SMTPDebug = SMTP::DEBUG_SERVER;   
-    $mail->isSMTP();
-    $mail->Host = 'smtp.office365.com';
-    $mail->SMTPAuth = true;
-    $mail->Username = 'your_Amitta.Ratt@outlook.com'; 
-    $mail->Password = 'your_572gt_BlaG861_Ku'; 
-    $mail->SMTPSecure = 'tls'; 
-    $mail->Port = 587; 
+    $txt = "You have received an email from $name:\n\n$message";
 
 
-    $mail->setFrom($email, $name);
-    $mail->addAddress('Amitta.Ratt@outlook.com', 'Amitta Rattanawadee');
-
-    $mail->isHTML(true);
-    $mail->Subject = 'Contact Form Submission from ' . $name;
-    $mail->Body = $message;
-
-if (!$mail->send()) {
+    if (mail($mailTo, $subject, $txt, $headers)) {
     echo "Message could not be sent. Mailer Error: {$mail->ErrorInfo}";
-} else {
+    } else {
     echo 'Message has been sent!';
-}
+    }
 
+    if (mail($mailTo, $subject, $txt, $headers)) {
     header("location: index.html?mailsend=success");
-} catch (Exception $e) {
+} else {
     header("location: index.html?mailsend=error");
 }
 } else {
-// Redirect or handle non-submission as needed
-header("location: index.html");
+    // Redirect or handle non-submission as needed
+    header("location: index.html");
 }
 ?>
